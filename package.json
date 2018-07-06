@@ -1,0 +1,27 @@
+{
+  "name": "cordova-plugin-tapjoy",
+  "version": "0.0.1",
+  "description": "tapjoy_ad",
+  "cordova": {
+    "id": "cordova-plugin-tapjoy",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rights-s/rights-cordova-plugin-tapjoy.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android",
+    "cordova-ios"
+  ],
+  "author": "Rights",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rights-s/rights-cordova-plugin-tapjoy/issues"
+  },
+  "homepage": "https://github.com/rights-s/rights-cordova-plugin-tapjoy#readme"
+}
