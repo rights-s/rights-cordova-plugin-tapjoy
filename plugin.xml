@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-plugin-tapjoy" version="0.0.1">
+   <name>PluginTapjoy</name>
+   <js-module name="PluginTapjoy" src="www/PluginTapjoy.js">
+      <clobbers target="pluginTapjoy" />
+   </js-module>
+   <platform name="android">
+      <config-file parent="/*" target="res/xml/config.xml">
+         <feature name="PluginTapjoy">
+            <param name="android-package" value="cordova.plugin.tapjoy.PluginTapjoy" />
+         </feature>
+      </config-file>
+      <config-file parent="/*" target="AndroidManifest.xml" />
+      <config-file target="AndroidManifest.xml" parent="/manifest/application">
+         <activity android:configChanges="orientation|keyboardHidden|screenSize" android:name="com.tapjoy.TJCOffersWebView" />
+         <activity android:configChanges="orientation|keyboardHidden|screenSize" android:name="com.tapjoy.TapjoyFullScreenAdWebView" />
+         <activity android:configChanges="orientation|keyboardHidden|screenSize" android:name="com.tapjoy.TapjoyDailyRewardAdWebView" />
+         <activity android:configChanges="orientation|keyboardHidden|screenSize" android:name="com.tapjoy.TapjoyVideoView" />
+         <activity android:configChanges="orientation|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:name="com.tapjoy.TJAdUnitView" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+         <activity android:configChanges="orientation|keyboardHidden|screenSize" android:name="com.tapjoy.mraid.view.ActionHandler" />
+         <activity android:configChanges="orientation|keyboardHidden|screenSize" android:name="com.tapjoy.mraid.view.Browser" />
+         <activity android:configChanges="orientation|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:name="com.tapjoy.TJAdUnitActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
+         <activity android:configChanges="orientation|keyboardHidden|screenSize" android:hardwareAccelerated="true" android:name="com.tapjoy.TJContentActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
+     </config-file>
+
+      <source-file src="src/android/PluginTapjoy.java" target-dir="src/cordova/plugin/tapjoy/" />
+      <lib-file src="src/android/libs/tapjoyconnectlibrary.jar"/>
+   </platform>
+   <platform name="ios">
+      <config-file parent="/*" target="config.xml">
+         <feature name="PluginTapjoy">
+            <param name="ios-package" value="PluginTapjoy" />
+         </feature>
+      </config-file>
+
+      <header-file src="src/ios/PluginTapjoy.h" />
+      <source-file src="src/ios/PluginTapjoy.m" />
+
+      <resource-file src="src/ios/Tapjoy.embeddedframework/Resources/TapjoyResources.bundle" />
+      <framework src="src/ios/Tapjoy.embeddedframework/Tapjoy.framework" custom="true"/>
+      <framework src="AdSupport.framework"/>
+      <framework src="CFNetwork.framework"/>
+      <framework src="CoreData.framework"/>
+      <framework src="CoreGraphics.framework"/>
+      <framework src="CoreLocation.framework"/>
+      <framework src="CoreMotion.framework"/>
+      <framework src="CoreTelephony.framework"/>
+      <framework src="EventKitUI.framework"/>
+      <framework src="EventKit.framework"/>
+      <framework src="Foundation.framework"/>
+      <framework src="libc++.tbd"/>
+      <framework src="libsqlite3.0.tbd"/>
+      <framework src="libxml2.tbd"/>
+      <framework src="libz.tbd"/>             
+      <framework src="MapKit.framework"/>             
+      <framework src="MediaPlayer.framework"/>             
+      <framework src="MobileCoreServices.framework"/>             
+      <framework src="PassKit.framework"/>             
+      <framework src="QuartzCore.framework"/>             
+      <framework src="Security.framework"/>             
+      <framework src="Social.framework"/>             
+      <framework src="StoreKit.framework"/>             
+      <framework src="SystemConfiguration.framework"/>             
+      <framework src="Twitter.framework"/>             
+      <framework src="UIKit.framework" />
+   </platform>
+</plugin>
