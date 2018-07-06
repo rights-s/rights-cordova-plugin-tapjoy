@@ -51,17 +51,17 @@
       <framework src="libc++.tbd"/>
       <framework src="libsqlite3.0.tbd"/>
       <framework src="libxml2.tbd"/>
-      <framework src="libz.tbd"/>             
-      <framework src="MapKit.framework"/>             
-      <framework src="MediaPlayer.framework"/>             
-      <framework src="MobileCoreServices.framework"/>             
-      <framework src="PassKit.framework"/>             
-      <framework src="QuartzCore.framework"/>             
-      <framework src="Security.framework"/>             
-      <framework src="Social.framework"/>             
-      <framework src="StoreKit.framework"/>             
-      <framework src="SystemConfiguration.framework"/>             
-      <framework src="Twitter.framework"/>             
+      <framework src="libz.tbd"/>
+      <framework src="MapKit.framework"/>
+      <framework src="MediaPlayer.framework"/>
+      <framework src="MobileCoreServices.framework"/>
+      <framework src="PassKit.framework"/>
+      <framework src="QuartzCore.framework"/>
+      <framework src="Security.framework"/>
+      <framework src="Social.framework"/>
+      <framework src="StoreKit.framework"/>
+      <framework src="SystemConfiguration.framework"/>
+      <framework src="Twitter.framework"/>
       <framework src="UIKit.framework" />
    </platform>
 </plugin>
