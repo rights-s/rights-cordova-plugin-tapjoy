@@ -36,7 +36,7 @@
       <header-file src="src/ios/PluginTapjoy.h" />
       <source-file src="src/ios/PluginTapjoy.m" />
 
-      <resource-file src="src/ios/Tapjoy.embeddedframework/Resources/TapjoyResources.bundle" />
+      <resource-file src="src/ios/Tapjoy.embeddedframework/Tapjoy.framework/Versions/A/Resources/TapjoyResources.bundle" />
       <framework src="src/ios/Tapjoy.embeddedframework/Tapjoy.framework" custom="true"/>
       <framework src="AdSupport.framework"/>
       <framework src="CFNetwork.framework"/>
