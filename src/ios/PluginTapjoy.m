@@ -124,7 +124,7 @@
 }
 
 -(void) setUserLevel:(CDVInvokedUrlCommand *)command{
-    if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]]){
+    if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]] && [[command.arguments objectAtIndex:0] intValue] > 0){
         [Tapjoy setUserLevel: [[command.arguments objectAtIndex:0] intValue]];
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                           messageAsString: @"TJ: Set User Level Succeeded"];
