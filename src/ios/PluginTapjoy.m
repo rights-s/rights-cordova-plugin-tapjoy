@@ -86,7 +86,7 @@
     //If you are not using Tapjoy Managed currency, you would set your own user ID here.
     if (![[command.arguments objectAtIndex:1] isKindOfClass: [NSNull class]]){
         [Tapjoy setUserID: [command.arguments objectAtIndex:1]];
-    } 
+    }
     [Tapjoy connect: [command.arguments objectAtIndex:2]];
 
     placements = [[NSMutableArray alloc] init];
@@ -107,21 +107,95 @@
 }
 
 -(void) setUserID:(CDVInvokedUrlCommand *)command{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setUserIDSuccess:)
+                                                 name:@"TJC_SET_USER_ID"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setUserIDFail:)
+                                                 name:@"TJC_SET_USER_ID"
+                                               object:nil];
+
     if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]]){
         [Tapjoy setUserID: [command.arguments objectAtIndex:0]];
     }
+
+    setupCallbackId = command.callbackId;
+}
+
+-(void)setUserIDSuccess:(NSNotification*)notifyObj{
+    NSLog(@"Set UserID Succeeded");
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                      messageAsString: @"TJ: Set UserID Succeeded"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:setupCallbackId];
+}
+-(void)setUserIDFail:(NSNotification*)notifyObj{
+    NSLog(@"Set UserID Failed");
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                      messageAsString: @"TJ: Set UserID Failed"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:setupCallbackId];
 }
 
 -(void) setUserLevel:(CDVInvokedUrlCommand *)command{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setUserLevelSuccess:)
+                                                 name:@"TJC_SET_USER_LEVEL"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setUserLevelFail:)
+                                                 name:@"TJC_SET_USER_LEVEL"
+                                               object:nil];
+
     if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]]){
-        [Tapjoy setUserLevel: [command.arguments objectAtIndex:0]];
+        [Tapjoy setUserLevel: [[command.arguments objectAtIndex:0] intValue]];
     }
+
+    setupCallbackId = command.callbackId;
+}
+
+-(void)setUserLevelSuccess:(NSNotification*)notifyObj{
+    NSLog(@"Set User Level Succeeded");
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                      messageAsString: @"TJ: Set User Level Succeeded"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:setupCallbackId];
+}
+
+-(void)setUserLevelFail:(NSNotification*)notifyObj{
+    NSLog(@"Set User Level Failed");
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                      messageAsString: @"TJ: Set User Level Failed"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:setupCallbackId];
 }
 
 -(void) setUserCohortVariable:(CDVInvokedUrlCommand *)command{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setUserLevelSuccess:)
+                                                 name:@"TJC_SET_USER_COHORT_VARIABLE"
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(setUserLevelFail:)
+                                                 name:@"TJC_SET_USER_COHORT_VARIABLE"
+                                               object:nil];
+
     if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]] && ![[command.arguments objectAtIndex:1] isKindOfClass: [NSNull class]]){
-        [Tapjoy setUserCohortVariable:[command.arguments objectAtIndex:0] value:[command.arguments objectAtIndex:1]];
+        [Tapjoy setUserCohortVariable: [[command.arguments objectAtIndex:0] intValue] value:[command.arguments objectAtIndex:1]];
     }
+}
+
+-(void)setUserCohortVariableSuccess:(NSNotification*)notifyObj{
+    NSLog(@"Set User Cohort Variable Succeeded");
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
+                                                      messageAsString: @"TJ: Set User Cohort Variable Succeeded"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:setupCallbackId];
+}
+-(void)setUserCohortVariableFail:(NSNotification*)notifyObj{
+    NSLog(@"Set User Cohort Variable Failed");
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                      messageAsString: @"TJ: Set User Cohort Variable Failed"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:setupCallbackId];
 }
 
 -(void) createPlacement:(CDVInvokedUrlCommand *)command {
