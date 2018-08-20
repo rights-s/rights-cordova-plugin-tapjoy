@@ -58,6 +58,33 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
       PluginTapjoy.this.showContent(placementName, callbackContext);
       return true;
     }
+
+    if (action.equals("setUserID")) {
+      String userId = args.getString(0);
+      Log.i(TAG, "setUserID: " + userId);
+
+      PluginTapjoy.this.setUserID(userId, callbackContext);
+      return true;
+    }
+
+    if (action.equals("setUserLevel")) {
+      Integer userLevel = args.getInt(0);
+      Log.i(TAG, "setUserID: " + userLevel);
+
+      PluginTapjoy.this.setUserLevel(userLevel, callbackContext);
+      return true;
+    }
+
+    if (action.equals("setUserCohortVariable")) {
+      Integer cohorIndex = args.getInt(0);
+      String cohortValue = args.getString(1);
+
+      Log.i(TAG, "setUserCohortVariable - index: " + cohorIndex + " value: " + cohortValue);
+
+      PluginTapjoy.this.setUserCohortVariable(cohorIndex, cohortValue, callbackContext);
+      return true;
+    }
+
     return false;
   }
 
@@ -163,6 +190,39 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
     } else {
       Log.i(TAG,"Content is not ready for show.");
       callbackContext.error("Content is not ready for show.");
+    }
+  }
+
+  public void setUserID(String userId, CallbackContext callbackContext) {
+    if (userId != null) {
+      Tapjoy.setUserID(userId);
+      Log.i(TAG, "Set user ID " + userId + "successed");
+      callbackContext.success("Set user ID " + userId + "successed");
+    } else {
+      Log.i(TAG, "Set user ID " + userId + "failed");
+      callbackContext.error("Set user ID " + userId + "failed");
+    }
+  }
+
+  public void setUserLevel(Integer userLevel, CallbackContext callbackContext) {
+    if (userLevel > 0) {
+      Tapjoy.setUserLevel(userLevel);
+      Log.i(TAG, "Set User Level " + userLevel + "successed");
+      callbackContext.success("Set User Level " + userLevel + "successed");
+    } else {
+      Log.i(TAG, "Set User Level " + userLevel + "failed");
+      callbackContext.error("Set User Level " + userLevel + "failed");
+    }
+  }
+
+  public void setUserCohortVariable(Integer cohortIndex, String cohortValue, CallbackContext callbackContext) {
+    if (cohortIndex >= 1 && cohortIndex <= 5 && cohortValue != null) {
+      Tapjoy.setUserCohortVariable(cohortIndex, cohortValue);
+      Log.i(TAG, "Set User Cohort Variable - Index: " + cohortIndex + " - Value: " + cohortValue + " successed");
+      callbackContext.success("Set User Cohort Variable - Index: " + cohortIndex + " - Value: " + cohortValue + " successed");
+    } else {
+      Log.i(TAG, "Set User Cohort Variable failed");
+      callbackContext.error("Set User Cohort Variable failed");
     }
   }
 

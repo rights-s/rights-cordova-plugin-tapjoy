@@ -31,6 +31,8 @@
 
 - (void) setup:(CDVInvokedUrlCommand*) command;
 - (void) setUserID:(CDVInvokedUrlCommand*) command;
+- (void) setUserLevel:(CDVInvokedUrlCommand*) command;
+- (void) setUserCohortVariable:(CDVInvokedUrlCommand*) command;
 - (void) createPlacement:(CDVInvokedUrlCommand*) command;
 - (void) requestContent:(CDVInvokedUrlCommand*) command;
 - (void) showContent:(CDVInvokedUrlCommand*) command;
