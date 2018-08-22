@@ -177,20 +177,55 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
   }
 
   public void showContent(String placementName, CallbackContext callbackContext) {
+    Log.i(TAG, "showContent for: " + placementName);
     TJPlacement selectedPlacement = (TJPlacement) placements.get(placementName);
 
-    if (selectedPlacement.isContentAvailable()) {
-      if (selectedPlacement.isContentReady()) {
-        selectedPlacement.showContent();
-        callbackContext.success("Tapjoy's advertising is shown.");
-      } else {
-        Log.i(TAG,"Can not show advertising of Tapjoy.");
-        callbackContext.error("Can not show advertising of Tapjoy");
+    selectedPlacement = Tapjoy.getPlacement(placementName, new TJPlacementListener() {
+      @Override
+      public void onRequestSuccess(TJPlacement placement) {
+        Log.i(TAG, "onRequestSuccess for placement " + placement.getName());
+
+        if (!placement.isContentAvailable()) {
+            Log.i(TAG,"No content available for placement " + placement.getName());
+            callbackContext.error("No content available for placement " + placement.getName());
+        }
       }
-    } else {
-      Log.i(TAG,"Content is not ready for show.");
-      callbackContext.error("Content is not ready for show.");
-    }
+
+      @Override
+      public void onRequestFailure(TJPlacement placement, TJError error) {
+        Log.i(TAG, "onRequestFailure for placement " + placement.getName() + " -- error: " + error.message);
+        callbackContext.error("onRequestFailure for placement " + placement.getName() + " -- error: " + error.message);
+      }
+
+      @Override
+      public void onContentReady(TJPlacement placement) {
+        Log.i(TAG, "onContentReady for placement " + placement.getName());
+        callbackContext.success("onContentReady for placement " + placement.getName());
+        placement.showContent();
+      }
+
+      @Override
+      public void onContentShow(TJPlacement placement) {
+        Log.i(TAG, "onContentShow for placement " + placement.getName());
+      }
+
+      @Override
+      public void onContentDismiss(TJPlacement placement) {
+        Log.i(TAG, "onContentDismiss for placement " + placement.getName());
+      }
+
+      @Override
+      public void onPurchaseRequest(TJPlacement placement, TJActionRequest request, String productId) {
+        request.completed();
+      }
+
+      @Override
+      public void onRewardRequest(TJPlacement placement, TJActionRequest request, String itemId, int quantity) {
+        request.completed();
+      }
+    });
+
+    selectedPlacement.requestContent();
   }
 
   public void setUserID(String userId, CallbackContext callbackContext) {
