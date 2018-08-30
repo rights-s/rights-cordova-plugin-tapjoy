@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-tapjoy",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "tapjoy_ad",
   "cordova": {
     "id": "cordova-plugin-tapjoy",
