@@ -200,7 +200,7 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
       @Override
       public void onContentReady(TJPlacement placement) {
         Log.i(TAG, "onContentReady for placement " + placement.getName());
-        callbackContext.success("onContentReady for placement " + placement.getName());
+        // callbackContext.success("onContentReady for placement " + placement.getName());
         placement.showContent();
       }
 
@@ -222,6 +222,29 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
       @Override
       public void onRewardRequest(TJPlacement placement, TJActionRequest request, String itemId, int quantity) {
         request.completed();
+      }
+    });
+
+    // Set Video Listener to anonymous callback
+    selectedPlacement.setVideoListener(new TJPlacementVideoListener() {
+      @Override
+      public void onVideoStart(TJPlacement placement) {
+        Log.i(TAG, "Video has started has started for: " + placement.getName());
+        callbackContext.success("onVideoStart for placement " + placement.getName());
+      }
+
+      @Override
+      public void onVideoError(TJPlacement placement, String errorMessage) {
+        Log.i(TAG, "Video error: " + errorMessage +  " for " + placement.getName());
+        callbackContext.error("onVideoError error: " + errorMessage +  " for " + placement.getName());
+      }
+
+      @Override
+      public void onVideoComplete(TJPlacement placement) {
+        Log.i(TAG, "Video has completed for: " + placement.getName());
+        callbackContext.success("onVideoComplete has completed for: " + placement.getName());
+        // Best Practice: We recommend calling getCurrencyBalance as often as possible so the user�s balance is always up-to-date.
+        // Tapjoy.getCurrencyBalance(TapjoyEasyApp.this);
       }
     });
 
