@@ -209,18 +209,13 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener, 
       @Override
       public void onContentReady(TJPlacement placement) {
         Log.i(TAG, "onContentReady for placement " + placement.getName());
-
-        if (!placement.isContentReady()) {
-          callbackContext.error("No content ready for placement " + placement.getName());
-        } else {
-          placement.showContent();
-          callbackContext.success("showContent for placement " + placement.getName());
-        }
+        placement.showContent();
       }
 
       @Override
       public void onContentShow(TJPlacement placement) {
         Log.i(TAG, "onContentShow for placement " + placement.getName());
+        callbackContext.success("showContent for placement " + placement.getName());
       }
 
       @Override
