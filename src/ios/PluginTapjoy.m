@@ -9,7 +9,7 @@
 @synthesize callbackId;
 @synthesize placement;
 
-- (id) initPlacementWithName:(NSString *)Name Command:(CDVInvokedUrlCommand *)Command CommandDelegate:(id<CDVCommandDelegate>)CommandDelegate{
+- (id) initPlacementWithName:(NSString *)Name Command:(CDVInvokedUrlCommand *)Command CommandDelegate:(id<CDVCommandDelegate>)CommandDelegate {
     self = [super init];
     if (self) {
         name = Name;
@@ -17,17 +17,18 @@
         commandDelegate = CommandDelegate;
         placement = [TJPlacement placementWithName: name delegate:self];
     }
+
     return self;
 }
 
-- (void) requestContent:(NSString *)CallbackId{
+- (void) requestContent:(NSString *)CallbackId {
     callbackId = CallbackId;
     [placement requestContent];
 }
 
 - (void) showContent:(NSString *)CallbackId {
     callbackId = CallbackId;
-    if(placement.isContentAvailable) {
+    if (placement.isContentAvailable) {
         [placement showContentWithViewController:nil];
     }
     else {
@@ -37,30 +38,68 @@
     }
 }
 
-// Called when the content request returns from Tapjoy's servers. Does not necessarily mean that content is available.
-- (void)requestDidSucceed:(TJPlacement*)placement{
+- (void) showVideoContent:(NSString *)CallbackId {
+    callbackId = CallbackId;
+
+    // VideoのDeleteを指定する
+    placement.videoDelegate = self;
+
+    if (placement.isContentAvailable) {
+        [placement showContentWithViewController: nil];
+    }
+    else {
+        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                          messageAsString:@"TJ: Content is not available."];
+        [commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+    }
+}
+
+#pragma mark TJPlacement delegate
+
+- (void) requestDidSucceed:(TJPlacement*)placement {
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsString:@"TJ: Request succeed."];
     [commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)requestDidFail:(TJPlacement*)placement error:(NSError*)error{
+- (void) requestDidFail:(TJPlacement*)placement error:(NSError*)error {
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
                                                       messageAsString: [error localizedDescription]];
     [commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-//Called when the content is actually available to display.
-- (void)contentIsReady:(TJPlacement*)placement{
+- (void) contentIsReady:(TJPlacement*)placement {
+    NSLog(@"Tapjoy Plugin: Content is ready for %@", placement.placementName);
+}
+
+- (void) contentDidAppear:(TJPlacement*)placement {
+    NSLog(@"Tapjoy Plugin: Content did appear for %@", placement.placementName);
+}
+
+- (void) contentDidDisappear:(TJPlacement*)placement {
+    NSLog(@"Tapjoy Plugin: Content did disappear for %@", placement.placementName);
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                                      messageAsString: @"TJ: Content is ready"];
+                                                      messageAsString:@"JP: Content did disappear."];
     [commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
-- (void)contentDidAppear:(TJPlacement*)placement{}
-- (void)contentDidDisappear:(TJPlacement*)placement{
+#pragma mark Tapjoy Video
+
+- (void) videoDidStart:(TJPlacement *)placement {
+    NSLog(@"Tapjoy Plugin: Video did start for: %@", placement.placementName);
+}
+
+- (void) videoDidComplete:(TJPlacement*)placement {
+    NSLog(@"Tapjoy Plugin: Video has completed for: %@", placement.placementName);
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
-                                                      messageAsString:@"TJ: Content did disappear."];
+                                                      messageAsString:@"JP: Video has completed."];
+    [commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
+}
+
+- (void) videoDidFail:(TJPlacement*)placement error:(NSString*)errorMsg {
+    NSLog(@"Tapjoy Plugin: Video did fail for: %@ with error: %@", placement.placementName, errorMsg);
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
+                                                      messageAsString:@"JP: Video did fail."];
     [commandDelegate sendPluginResult:pluginResult callbackId:callbackId];
 }
 
@@ -93,22 +132,22 @@
     setupCallbackId = command.callbackId;
 }
 
--(void)tjcConnectSuccess:(NSNotification*)notifyObj{
-    NSLog(@"Tapjoy connect Succeeded");
+- (void) tjcConnectSuccess:(NSNotification*)notifyObj{
+    NSLog(@"Tapjoy Plugin: Tapjoy connect Succeeded");
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                       messageAsString: @"TJ: Setup complete"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:setupCallbackId];
 }
--(void)tjcConnectFail:(NSNotification*)notifyObj{
-    NSLog(@"Tapjoy connect Failed");
+- (void) tjcConnectFail:(NSNotification*)notifyObj{
+    NSLog(@"Tapjoy Plugin: Tapjoy connect Failed");
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
                                                       messageAsString: @"TJ: Setup failed"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:setupCallbackId];
 }
 
--(void) setUserID:(CDVInvokedUrlCommand *)command{
-    if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]]){
-        NSLog(@"Set UserID Succeeded");
+- (void) setUserID:(CDVInvokedUrlCommand *)command{
+    if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]]) {
+        NSLog(@"Tapjoy Plugin: Tapjoy Plugin: Set UserID Succeeded");
         [Tapjoy setUserID: [command.arguments objectAtIndex:0]];
 
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
@@ -116,15 +155,15 @@
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
     else {
-        NSLog(@"Set UserID Failed");
+        NSLog(@"Tapjoy Plugin: Set UserID Failed");
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR
                                                           messageAsString: @"TJ: Set UserID Failed"];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }
 }
 
--(void) setUserLevel:(CDVInvokedUrlCommand *)command{
-    if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]] && [[command.arguments objectAtIndex:0] intValue] > 0){
+- (void) setUserLevel:(CDVInvokedUrlCommand *)command{
+    if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]] && [[command.arguments objectAtIndex:0] intValue] > 0) {
         [Tapjoy setUserLevel: [[command.arguments objectAtIndex:0] intValue]];
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
                                                           messageAsString: @"TJ: Set User Level Succeeded"];
@@ -137,9 +176,9 @@
     }
 }
 
--(void) setUserCohortVariable:(CDVInvokedUrlCommand *)command{
+- (void) setUserCohortVariable:(CDVInvokedUrlCommand *)command{
     if (![[command.arguments objectAtIndex:0] isKindOfClass: [NSNull class]] && ![[command.arguments objectAtIndex:1] isKindOfClass: [NSNull class]] &&
-        [[command.arguments objectAtIndex:0] intValue] >= 1 && [[command.arguments objectAtIndex:0] intValue] <= 5){
+        [[command.arguments objectAtIndex:0] intValue] >= 1 && [[command.arguments objectAtIndex:0] intValue] <= 5) {
         [Tapjoy setUserCohortVariable: [[command.arguments objectAtIndex:0] intValue] value:[command.arguments objectAtIndex:1]];
 
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK
@@ -153,7 +192,7 @@
     }
 }
 
--(void) createPlacement:(CDVInvokedUrlCommand *)command {
+- (void) createPlacement:(CDVInvokedUrlCommand *)command {
     Placement *placement = [[Placement alloc] initPlacementWithName: [command.arguments objectAtIndex:0] Command:command CommandDelegate:self.commandDelegate];
     [placements addObject:placement];
     [self requestContent:command];
@@ -169,9 +208,14 @@
     [placement showContent:command.callbackId];
 }
 
-- (Placement*)findPlacementWithName:(NSString*)Name{
-    for (Placement* item in placements){
-        if ([item.name isEqualToString:Name]){
+- (void) showVideoContent:(CDVInvokedUrlCommand *)command {
+    Placement *placement = [self findPlacementWithName: [command.arguments objectAtIndex:0]];
+    [placement showVideoContent:command.callbackId];
+}
+
+- (Placement*)findPlacementWithName:(NSString*)Name {
+    for (Placement* item in placements) {
+        if ([item.name isEqualToString:Name]) {
             return item;
         };
     }
@@ -179,3 +223,4 @@
 }
 
 @end
+
