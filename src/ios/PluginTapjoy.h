@@ -15,6 +15,7 @@
 
 - (void) requestContent:(NSString*)CallbackId;
 - (void) showContent:(NSString*)CallbackId;
+- (void) showVideoContent:(NSString*)CallbackId;
 
 - (void)requestDidSucceed:(TJPlacement*)placement;// Called when the content request returns from Tapjoy's servers. Does not necessarily mean that content is available.
 - (void)requestDidFail:(TJPlacement*)placement error:(NSError*)error;
@@ -36,6 +37,7 @@
 - (void) createPlacement:(CDVInvokedUrlCommand*) command;
 - (void) requestContent:(CDVInvokedUrlCommand*) command;
 - (void) showContent:(CDVInvokedUrlCommand*) command;
+- (void) showVideoContent:(CDVInvokedUrlCommand*) command;
 
 - (Placement*)findPlacementWithName:(NSString*)Name;
 @end

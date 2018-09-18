@@ -13,11 +13,12 @@ import com.tapjoy.TJPlacementListener;
 import com.tapjoy.Tapjoy;
 import com.tapjoy.TapjoyConnectFlag;
 import java.util.Hashtable;
+import com.tapjoy.TJPlacementVideoListener;
 
 /**
  * This class echoes a string called from JavaScript.
  */
-public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
+public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener, TJPlacementVideoListener {
   public static final String TAG = "PluginTapjoy";
   private Hashtable<String, Object> placements = new Hashtable<String, Object>();
 
@@ -56,6 +57,14 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
       Log.i(TAG, "showContent: " + placementName);
 
       PluginTapjoy.this.showContent(placementName, callbackContext);
+      return true;
+    }
+
+    if (action.equals("showVideoContent")) {
+      String placementName = args.getString(0);
+      Log.i(TAG, "showVideoContent: " + placementName);
+
+      PluginTapjoy.this.showVideoContent(placementName, callbackContext);
       return true;
     }
 
@@ -200,7 +209,58 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
       @Override
       public void onContentReady(TJPlacement placement) {
         Log.i(TAG, "onContentReady for placement " + placement.getName());
-        callbackContext.success("onContentReady for placement " + placement.getName());
+        placement.showContent();
+      }
+
+      @Override
+      public void onContentShow(TJPlacement placement) {
+        Log.i(TAG, "onContentShow for placement " + placement.getName());
+        callbackContext.success("showContent for placement " + placement.getName());
+      }
+
+      @Override
+      public void onContentDismiss(TJPlacement placement) {
+        Log.i(TAG, "onContentDismiss for placement " + placement.getName());
+      }
+
+      @Override
+      public void onPurchaseRequest(TJPlacement placement, TJActionRequest request, String productId) {
+        request.completed();
+      }
+
+      @Override
+      public void onRewardRequest(TJPlacement placement, TJActionRequest request, String itemId, int quantity) {
+        request.completed();
+      }
+    });
+
+    selectedPlacement.requestContent();
+  }
+
+  public void showVideoContent(String placementName, CallbackContext callbackContext) {
+    Log.i(TAG, "showContent for: " + placementName);
+    TJPlacement selectedPlacement = (TJPlacement) placements.get(placementName);
+
+    selectedPlacement = Tapjoy.getPlacement(placementName, new TJPlacementListener() {
+      @Override
+      public void onRequestSuccess(TJPlacement placement) {
+        Log.i(TAG, "onRequestSuccess for placement " + placement.getName());
+
+        if (!placement.isContentAvailable()) {
+          Log.i(TAG,"No content available for placement " + placement.getName());
+          callbackContext.error("No content available for placement " + placement.getName());
+        }
+      }
+
+      @Override
+      public void onRequestFailure(TJPlacement placement, TJError error) {
+        Log.i(TAG, "onRequestFailure for placement " + placement.getName() + " -- error: " + error.message);
+        callbackContext.error("onRequestFailure for placement " + placement.getName() + " -- error: " + error.message);
+      }
+
+      @Override
+      public void onContentReady(TJPlacement placement) {
+        Log.i(TAG, "onContentReady for placement " + placement.getName());
         placement.showContent();
       }
 
@@ -222,6 +282,26 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
       @Override
       public void onRewardRequest(TJPlacement placement, TJActionRequest request, String itemId, int quantity) {
         request.completed();
+      }
+    });
+
+    // Set Video Listener to anonymous callback
+    selectedPlacement.setVideoListener(new TJPlacementVideoListener() {
+      @Override
+      public void onVideoStart(TJPlacement placement) {
+        Log.i(TAG, "Video has started has started for: " + placement.getName());
+      }
+
+      @Override
+      public void onVideoError(TJPlacement placement, String errorMessage) {
+        Log.i(TAG, "Video error: " + errorMessage +  " for " + placement.getName());
+        callbackContext.error("onVideoError error: " + errorMessage +  " for " + placement.getName());
+      }
+
+      @Override
+      public void onVideoComplete(TJPlacement placement) {
+        Log.i(TAG, "Video has completed for: " + placement.getName());
+        callbackContext.success("onVideoComplete has completed for: " + placement.getName());
       }
     });
 
@@ -300,5 +380,23 @@ public class PluginTapjoy extends CordovaPlugin implements TJPlacementListener {
     Log.i(TAG, message + tjPlacement.getName());
 
     tjActionRequest.completed();
+  }
+
+  /**
+   * Video listener callbacks
+   */
+  @Override
+  public void onVideoStart(TJPlacement placement) {
+    Log.i(TAG, "Video has started has started for: " + placement.getName());
+  }
+
+  @Override
+  public void onVideoError(TJPlacement placement, String errorMessage) {
+    Log.i(TAG, "Video error: " + errorMessage +  " for " + placement.getName());
+  }
+
+  @Override
+  public void onVideoComplete(TJPlacement placement) {
+    Log.i(TAG, "Video has completed for: " + placement.getName());
   }
 }

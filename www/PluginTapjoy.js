@@ -21,7 +21,10 @@ var Tapjoy = {
   },
   showContent: function(success_cb, error_cb, name){
     exec(success_cb, error_cb, 'PluginTapjoy', 'showContent', [name]);
-  }
+  },
+  showVideoContent: function(success_cb, error_cb, name){
+    exec(success_cb, error_cb, 'PluginTapjoy', 'showVideoContent', [name]);
+  },
 };
 
 module.exports = Tapjoy;
