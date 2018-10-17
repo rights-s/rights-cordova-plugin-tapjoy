@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rights-s/rights-cordova-plugin-tapjoy.git"
+    "url": "git+https://github.com/rights-s/rights-cordova-plugin-tapjoy"
   },
   "keywords": [
     "ecosystem:cordova",
